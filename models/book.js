@@ -19,7 +19,7 @@ var BookSchema = new Schema({
       required: true
     },
     genre:[{
-      type: schema.Types.ObjectId, ref: 'Genre'
+      type: Schema.Types.ObjectId, ref: 'Genre'
     }]
   });
 
