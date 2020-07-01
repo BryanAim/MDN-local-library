@@ -14,6 +14,7 @@ var app = express();
 var mongoose = require('mongoose');
 var DB = process.env.DB;
 
+mongoose.set('useUnifiedTopology', true);
 mongoose.connect(DB, {useNewUrlParser: true});
 //Get the default connection
 var db = mongoose.connection;
