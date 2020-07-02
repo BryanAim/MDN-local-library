@@ -7,7 +7,7 @@ book: {
   type: Schema.Types.ObjectId, 
   ref: 'Book',
   required: true
-},
+},// Reference to the associated book.
 imprint: {
   type: String,
   required: true
@@ -15,7 +15,8 @@ imprint: {
 status: {
   type: String,
   required: true,
-  enum: ['Available','Maintenance', 'Loaned', 'Reserved']
+  enum: ['Available', 'Maintenance', 'Loaned', 'Reserved'],
+  default: 'Maintenance'
 },
 due_back: {
   type: Date,
@@ -27,7 +28,7 @@ due_back: {
 BookInstanceSchema
 .virtual('url')
 .get(function () {
-  return '/catalog/bookinstance/' + this._id;
+  return '/catalog/bookinstance/'+this._id;
 });
 
 //Export model 
