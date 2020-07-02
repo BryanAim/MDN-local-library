@@ -1,7 +1,34 @@
 var Book = require('../models/book');
+var Author = require('../models/author');
+var Genre = require('../models/genre');
+var BookInstance = require('../models/bookinstance');
+
+var async = require('async');
 
 exports.index = function (req, res) {
-  res.send('NOT IMPLEMENTED: Site Homepage');
+  // The async.parallel() method is passed an object with functions for getting the counts for each of our models. These functions are all started at the same time. When all of them have completed the final callback is invoked with the counts in the results parameter (or an error).
+  async.parallel({
+    book_count: function (callback) {
+      // We use the countDocuments() method to get the number of instances of each model. This is called on a model with an optional set of conditions to match against in the first argument and a callback in the second argument
+      Book.countDocuments({}, callback); // Pass an empty object as match condition to find all documents of this collection
+    },
+    book_instance_count: function (callback) {
+      BookInstance.countDocuments({}, callback);
+    },
+    book_instance_available_count: function (callback) {
+      BookInstance.countDocuments({status: 'Available'}, callback);
+    },
+    author_count: function(callback) {
+      Author.countDocuments({}, callback);
+    },
+    genre_count: function (callback) {
+      Genre.countDocuments({}, callback);
+    }
+    // On success the callback function calls res.render(), specifying a view (template) named 'index' and an object containing the data that is to be inserted into it (this includes the results object that contains our model counts). The data is supplied as key-value pairs, and can be accessed in the template using the key.
+  }, function (err, results) {
+    res.render('index', {title: 'Local Library Home', error: err, data: results});
+  });
+  
 }
 
 // Display list of all books
