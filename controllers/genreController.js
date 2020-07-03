@@ -31,7 +31,7 @@ exports.genre_detail = function (req, res, next) {
     //No results
     var err = new Error('Genre not found');
     err.status = 404;
-    return next(err)
+    return next(err);
   }
   // Successful, so render
   res.render('genre_detail', {title: 'Genre Detail', genre: results.genre, genre_books: results.genre_books} );
