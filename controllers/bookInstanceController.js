@@ -14,8 +14,22 @@ exports.bookinstance_list = function (req, res, next) {
 };
 
 // Display detail page for a specific book instance 
-exports.bookinstance_detail = function (req, res) {
-  res.send('NOT IMPLEMENTED: Book instance detail: ' + req.params.id);
+exports.bookinstance_detail = function (req, res, next) {
+  // The method calls BookInstance.findById() with the ID of a specific book instance extracted from the URL (using the route), and accessed within the controller via the request parameters: req.params.id). It then calls populate() to get the details of the associated Book.
+  BookInstance.findById(req.params.id)
+  .populate('book')
+  .exec(function (err, bookinstance) {
+    if (err) { return next(err); }
+    if (bookinstance==null) {
+      //No results
+      var err = new Error('Book copy not found');
+      err.status = 404;
+      return next(err);
+    }
+    // Successful, so render
+    res.render('bookinstance_detail', { title: 'Book', bookinstance: bookinstance})
+  })
+  
 };
 
 // Display BookInstance create form on GET
