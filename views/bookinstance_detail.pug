@@ -8,12 +8,12 @@ block content
   p #[strong Imprint:] #{bookinstance.imprint}
 
   p #[strong Status:]
-    if bookinstance.status='Available'
+    if bookinstance.status=='Available'
       span.text-success #{bookinstance.status}
-    else if bookinstance.status='Maintenance'
+    else if bookinstance.status=='Maintenance'
       span.text-danger #{bookinstance.status}
     else
       span.text-warning #{bookinstance.status}
   
   if bookinstance.status!='Available'
-    p #[strong Due back:] #{bookinstance.due_back}
+    p #[strong Due back:] #{bookinstance.due_back_formatted}

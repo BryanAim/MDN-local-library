@@ -34,9 +34,15 @@ BookInstanceSchema
 
 //Virtual for moment's date formatting
 BookInstanceSchema
-.virtual(('due_back_formatted'))
+.virtual('due_back_formatted')
 .get(function () {
   return moment(this.due_back).format('MMMM Do, YYYY')
+});
+
+BookInstanceSchema
+.virtual('due_back_yyyy_mm_dd')
+.get(function () {
+  return moment(this.due_back).format('YYYY-MM-DD')
 })
 
 //Export model 
