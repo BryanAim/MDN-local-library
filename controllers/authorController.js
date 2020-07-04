@@ -7,6 +7,8 @@
 var Author = require('../models/author');
 var Book = require('../models/book');
 var async = require('async');
+const { body,validationResult } = require('express-validator/check');
+const { sanitizeBody, sanitize } = require('express-validator/filter');
 
 // Display list of all Authors
 
@@ -45,14 +47,62 @@ exports.author_detail = function (req, res, next) {
 }
 
 // Display Author Create form on GET
-exports.author_create_get = function (req, res) {
-  res.send('NOT IMPLEMENTED: Author create GET');
+exports.author_create_get = function (req, res, next) {
+  res.render('author_form', {title: 'Create Author'})
 };
 
 // Handle Author create on POST
-exports.author_create_post = function(req, res) {
-  res.send('NOT IMPLEMENTED: Author create post');
-};
+exports.author_create_post = [
+  
+  //Validate fields.
+  body('first_name').isLength({min:1}).trim().withMessage('First name must be specified').isAlphanumeric().withMessage('First name has non-alphanumeric characters'),
+
+  body('last_name').isLength({min:1}).trim().withMessage('Last name must be specified').isAlphanumeric().withMessage('Last name has non-alphanumeric characters'),
+
+  // the checkFalsy flag means that we'll accept either an empty string or null as an empty value
+  
+  body('date_of_birth', 'Invalid date of birth').optional({ checkFalsy: true }).isISO8601(),
+
+  body('date_of_death', 'Invalid date of death').optional({ checkFalsy: true }).isISO8601(),
+
+  // Sanitize fields
+  sanitizeBody('first_name'),escape(),
+  sanitizeBody('last_name').escape(),
+  sanitizeBody('date_of_birth').toDate(),
+  sanitizeBody('date_of_death').toDate(),
+
+  //Process request after validation and sanitization
+  (req, res, next) => {
+
+    //Extract the validation errors from a request
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      //No errors, render form agin with sanitized values/errors messages
+      res.render('author_form', {title: 'Create Author', author: req.body, errors: errors.array() });
+      return;
+
+    } else {
+      //Data form is valid
+
+      //Create an Author aobject with escaped and trimmed data
+
+      var author = new Author(
+        {
+          first_name: req.body.first_name,
+          last_name: req.body.last_name,
+          date_of_birth: req.body.date_of_birth,
+          date_of_death: req.body.date_of_death
+        });
+      author.save(function(err) {
+        if (err) { return next(err); }
+        //Successful- redirect to the new author record
+        res.redirect(author.url);
+      });
+    }
+  }
+
+];
 
 // Display Author delete on GET
 exports.author_delete_get = function (req, res) {
