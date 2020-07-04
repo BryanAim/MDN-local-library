@@ -3,12 +3,12 @@
 
 // return this.date_of_birth ? moment(this.date_of_birth).format('YYYY-MM-DD') : '';
 
-
+const { body,validationResult } = require('express-validator/check');
+const { sanitizeBody } = require('express-validator/filter');
 var Author = require('../models/author');
 var Book = require('../models/book');
 var async = require('async');
-const { body,validationResult } = require('express-validator/check');
-const { sanitizeBody, sanitize } = require('express-validator/filter');
+
 
 // Display list of all Authors
 
@@ -48,7 +48,7 @@ exports.author_detail = function (req, res, next) {
 
 // Display Author Create form on GET
 exports.author_create_get = function (req, res, next) {
-  res.render('author_form', {title: 'Create Author'})
+  res.render('author_form', {title: 'Create Author'});
 };
 
 // Handle Author create on POST
@@ -60,7 +60,7 @@ exports.author_create_post = [
   body('last_name').isLength({min:1}).trim().withMessage('Last name must be specified').isAlphanumeric().withMessage('Last name has non-alphanumeric characters'),
 
   // the checkFalsy flag means that we'll accept either an empty string or null as an empty value
-  
+
   body('date_of_birth', 'Invalid date of birth').optional({ checkFalsy: true }).isISO8601(),
 
   body('date_of_death', 'Invalid date of death').optional({ checkFalsy: true }).isISO8601(),
