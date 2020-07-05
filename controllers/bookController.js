@@ -5,6 +5,8 @@ var BookInstance = require('../models/bookinstance');
 
 var async = require('async');
 
+const{ body, validationResult, sanitizeBody } = require('express-validator');
+
 exports.index = function (req, res) {
   // The async.parallel() method is passed an object with functions for getting the counts for each of our models. These functions are all started at the same time. When all of them have completed the final callback is invoked with the counts in the results parameter (or an error).
   async.parallel({
@@ -72,9 +74,23 @@ exports.book_detail = function(req, res, next) {
 };
 
 // Display book create form on GET.
-exports.book_create_get = function(req, res) {
-  res.send('NOT IMPLEMENTED: Book create GET');
-};
+exports.book_create_get = function(req, res, next) {
+
+  // Get all authors and genres, which we can use for adding to our book
+  async.parallel({
+    authors: function(callback) {
+      Author.find(callback);
+    },
+    genres: function (callback) {
+      Genre.find(callback);
+    }
+  }, function(err, results) {
+    if (err) {
+      return next(err);
+    }
+    res.render('book_form', { title: 'Create Book', authors: results.authors, genres: results.genres });
+  });
+}
 
 // Handle book create on POST.
 exports.book_create_post = function(req, res) {
