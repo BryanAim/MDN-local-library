@@ -3,8 +3,6 @@
 
 // return this.date_of_birth ? moment(this.date_of_birth).format('YYYY-MM-DD') : '';
 
-const { body,validationResult } = require('express-validator/check');
-const { sanitizeBody } = require('express-validator/filter');
 var Author = require('../models/author');
 var Book = require('../models/book');
 var async = require('async');
