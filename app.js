@@ -9,7 +9,7 @@ var usersRouter = require('./routes/users');
 var catalogRouter = require('./routes/catalog')//Import routes for "catalog" area of site
 var compression = require('compression');
 var helmet= require('helmet');
-require('dotenv').config();
+// require('dotenv').config();
 
 var app = express();
 
