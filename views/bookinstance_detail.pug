@@ -17,3 +17,8 @@ block content
   
   if bookinstance.status!='Available'
     p #[strong Due back:] #{bookinstance.due_back_formatted}
+  hr
+  p
+    a(href=bookinstance.url+'/delete') Delete Bookinstance
+  p
+    a(href=bookinstance.url+'/update') Update Bookinstance
