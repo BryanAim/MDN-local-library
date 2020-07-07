@@ -118,6 +118,8 @@ exports.bookinstance_delete_get = function (req, res, next) {
       //No results
       res.redirect('/catalog/bookinstances');
     }
+    // Successful so render
+    res.render('bookinstance_delete', {title: 'Delete Bookinstance', bookinstance: bookinstance })
   })
 };
 
