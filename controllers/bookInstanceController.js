@@ -140,38 +140,27 @@ exports.bookinstance_update_get = function (req, res, next) {
   
   // GEt book, authors and genres for form
   async.parallel({
-    book: function (callback) {
-      Book.findById(req.params.id)
-      .populate('author')
-      .populate('genre')
+    bookinstance: function (callback) {
+      BookInstance.findById(req.params.id)
+      .populate('book')
       .exec(callback);
     },
-    authors: function (callback) {
-      Author.find(callback)
+    books: function (callback) {
+      Book.find(callback)
     },
     genres: function (callback) {
       Genre.find(callback);
     },
   }, function (err, results) {
     if (err) { return next(err) }
-    if (results.book==null) {
+    if (results.bookinstance==null) {
       //No results
       var err = new Error('Book not found');
       err.status = 404;
       return next(err);
     }
     //Success
-    //Mark selected genres as checked
-    for (let all_g_iter = 0; all_g_iter < results.genres.length; all_g_iter++) {
-      for (let book_g_iter = 0; book_g_iter < results.book.genre.length; book_g_iter++) {
-        if (results.genres[all_g_iter]._id.toString()==results.book.genre[book_g_iter]._id.toString()) {
-          results.genres[all_g_iter].checked='true'
-        }
-        
-      };
-      
-    }
-    res.render('book_form', { title: 'Update book', authors: results.authors, genres: results.genres, book: results.book })
+    res.render('bookinstance_form', { title: 'Update BookInstance', authors: results.authors, genres: results.genres, book: results.book })
   })
 };
 
@@ -234,7 +223,7 @@ exports.bookinstance_update_post = [
       }, function (err, results) {
         if (err) { return next(err) }
 
-        //Mark our selected genres as checkedbundleRenderer.renderToStream
+        //Mark our selected genres as checked
         for (let i = 0; i < results.genres.length; i++) {
           if (book.genre.indexOf(results.genres[i]._id) > -1) {
             results.genres[i].checked='true';
