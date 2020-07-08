@@ -156,7 +156,7 @@ exports.genre_update_get = function (req, res, next) {
     if (err) {
       return next(err)
     }
-    if (genre==nill) {
+    if (genre==null) {
       // No results
       var err = new Error('Genre not found');
       err.status(404);
