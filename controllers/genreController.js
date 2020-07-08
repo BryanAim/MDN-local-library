@@ -2,7 +2,7 @@ var Genre = require('../models/genre');
 var Book = require('../models/book');
 var async = require('async');
 const validator = require('express-validator');
-const genre = require('../models/genre');
+const { body, sanitizeBody, validationResult } = require('express-validator');
 
 //Display list of all Genres
 exports.genre_list = function (req, res, next) {
@@ -168,6 +168,36 @@ exports.genre_update_get = function (req, res, next) {
 };
 
 //Handle Genre update form on POST
-exports.genre_update_post = function (req, res) {
-  res.send('NOT IMPLEMENTED: Genre update POST');
-};
+exports.genre_update_post = [
+
+  //Validate that the name field ain't empty
+  body('name', 'Genre name required').isLength({ min: 1}).trim(),
+
+  //Sanitize (escape) the name field
+  sanitizeBody('genre').escape(),
+
+  //process request after validation and sanitization
+  (req, res, next) => {
+
+    //extract the validation errors from a request
+    const errors = validationResult(req);
+
+    //Create a genre object with escaped & trimmed data, (and the old id!)
+    var genre = new Genre({
+      name: req.body.name,
+      _id: req.params.id
+    });
+    if (!errors.isEmpty()) {
+      // No errors, render the form again with sanitized values/ error messages
+      res.render('genre_form', { title: 'Update Genre', genre: genre, errors: errors.array()});
+      return;
+    } else {
+      // Data from form is valid. Update the record
+      Genre.findByIdAndUpdate(req.params.id, genre, {}, function (err, thegenre) {
+        if(err) { return next(err) }
+        // Successful, redirect to the genre detail
+        res.redirect(thegenre.url)
+      })
+    }
+  }
+]

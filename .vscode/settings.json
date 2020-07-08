@@ -4,6 +4,7 @@
     "bookinstance",
     "bookinstances",
     "thebook",
-    "thebookinstance"
+    "thebookinstance",
+    "thegenre"
   ]
 }
