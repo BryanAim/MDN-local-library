@@ -3,6 +3,7 @@
     "bookid",
     "bookinstance",
     "bookinstances",
-    "thebook"
+    "thebook",
+    "thebookinstance"
   ]
 }
