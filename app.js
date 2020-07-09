@@ -9,14 +9,13 @@ var usersRouter = require('./routes/users');
 var catalogRouter = require('./routes/catalog')//Import routes for "catalog" area of site
 var compression = require('compression');
 var helmet= require('helmet');
-// require('dotenv').config();
+require('dotenv').config();
 
 var app = express();
 
 //Set up mongoose connection
 var mongoose = require('mongoose');
-var dev_db_url='mongodb+srv://bryanaim:kingkobra@cluster0-73kit.mongodb.net/local-library?retryWrites=true';
-var DB = process.env.MONGODB_URI || dev_db_url;
+var DB = process.env.MONGODB_URI
 
 mongoose.set('useUnifiedTopology', true);
 mongoose.connect(DB, {useNewUrlParser: true});
