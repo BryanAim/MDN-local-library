@@ -85,6 +85,16 @@ exports.author_create_post = [
 
     // Extract the validation errors from a request
     const errors= validationResult(req);
+
+    //Create Author object with escaped and trimmed data
+
+    var author = new Author({
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      date_of_birth: req.body.date_of_birth,
+      date_of_death: req.body.date_of_death
+    })
+
     if (!errors.isEmpty()) {
       // There are no errors. Render again with sanitized values/ error messages
       res.render('author_form', { title: 'Create Author', author: req.body, errors: errors.array() });
